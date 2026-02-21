@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Flux Book Club</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface-hover: #1c1c1c;
+      --border: #2a2a2a;
+      --text: #e8e8e8;
+      --text-muted: #888;
+      --accent: #f97316;
+      --accent-soft: rgba(249, 115, 22, 0.12);
+      --star: #f59e0b;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 3rem 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .header__brand {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .header__title {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .header__subtitle {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1.5rem 1.5rem 0;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+    .filter-btn.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Book Grid */
+    .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .book-card {
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border-radius: var(--radius);
+    }
+    .book-card:hover { transform: translateY(-4px); }
+
+    .book-card__cover {
+      width: 100%;
+      aspect-ratio: 2/3;
+      object-fit: cover;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .book-card__info { padding: 0.75rem 0.25rem 0; }
+    .book-card__title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .book-card__author {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+    .book-card__rating {
+      margin-top: 0.3rem;
+      font-size: 0.8rem;
+    }
+    .book-card__category {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 0.15rem 0.5rem;
+      border-radius: 100px;
+      margin-top: 0.4rem;
+    }
+
+    /* Detail Overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 100;
+      overflow-y: auto;
+      padding: 2rem 1rem;
+      animation: fadeIn 0.2s;
+    }
+    .overlay.active { display: block; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .detail {
+      max-width: 700px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      animation: slideUp 0.25s ease-out;
+    }
+
+    .detail__top {
+      display: flex;
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+    .detail__cover {
+      width: 140px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .detail__meta { flex: 1; min-width: 0; }
+    .detail__category {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 0.15rem 0.5rem;
+      border-radius: 100px;
+      margin-bottom: 0.5rem;
+    }
+    .detail__title { font-size: 1.4rem; font-weight: 700; line-height: 1.3; }
+    .detail__author { color: var(--text-muted); margin-top: 0.25rem; }
+    .detail__avg-rating { margin-top: 0.5rem; font-size: 0.95rem; }
+    .detail__summary { color: var(--text-muted); margin-top: 0.75rem; font-size: 0.9rem; }
+
+    .detail__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: opacity 0.2s;
+    }
+    .detail__cta:hover { opacity: 0.85; }
+
+    .detail__close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      z-index: 101;
+    }
+    .detail__close:hover { background: var(--surface-hover); }
+
+    /* Reviews Section */
+    .reviews { padding: 0 2rem 2rem; }
+    .reviews__heading {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .review {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .review__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+    .review__reviewer { font-weight: 600; font-size: 0.9rem; }
+    .review__date { font-size: 0.75rem; color: var(--text-muted); }
+    .review__stars { margin-bottom: 0.5rem; }
+    .review__text { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+
+    .star { color: var(--border); }
+    .star.filled { color: var(--star); }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--text-muted);
+    }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      .detail__top { flex-direction: column; align-items: center; text-align: center; }
+      .detail__cover { width: 120px; }
+      .book-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header__brand">Project Flux</div>
+    <h1 class="header__title">Book Club</h1>
+    <p class="header__subtitle">Curated reads on AI, project delivery, and leadership &mdash; reviewed by the community.</p>
+  </div>
+
+  <div class="filters" id="filters"></div>
+
+  <div class="container">
+    <div class="book-grid" id="bookGrid"></div>
+    <div class="empty-state" id="emptyState" style="display:none;">No books found in this category.</div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <button class="detail__close" id="closeBtn">&times;</button>
+    <div class="detail" id="detail"></div>
+  </div>
+
+  <script>
+    let books = [];
+    let activeFilter = 'All';
+
+    // Stars HTML
+    function starsHTML(rating) {
+      return Array.from({ length: 5 }, (_, i) =>
+        `<span class="star ${i < Math.round(rating) ? 'filled' : ''}">\u2605</span>`
+      ).join('');
+    }
+
+    // Average rating
+    function avgRating(reviews) {
+      if (!reviews.length) return 0;
+      return reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+    }
+
+    // Format date
+    function formatDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    // Get unique categories
+    function getCategories() {
+      return ['All', ...new Set(books.map(b => b.category))];
+    }
+
+    // Render filters
+    function renderFilters() {
+      const container = document.getElementById('filters');
+      container.innerHTML = getCategories().map(cat =>
+        `<button class="filter-btn ${cat === activeFilter ? 'active' : ''}" data-cat="${cat}">${cat}</button>`
+      ).join('');
+
+      container.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeFilter = btn.dataset.cat;
+          renderFilters();
+          renderGrid();
+        });
+      });
+    }
+
+    // Render grid
+    function renderGrid() {
+      const grid = document.getElementById('bookGrid');
+      const empty = document.getElementById('emptyState');
+      const filtered = activeFilter === 'All' ? books : books.filter(b => b.category === activeFilter);
+
+      if (!filtered.length) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      grid.innerHTML = filtered.map(book => {
+        const avg = avgRating(book.reviews);
+        return `
+          <div class="book-card" data-id="${book.id}">
+            <img class="book-card__cover" src="${book.cover}" alt="${book.title}" loading="lazy">
+            <div class="book-card__info">
+              <div class="book-card__title">${book.title}</div>
+              <div class="book-card__author">${book.author}</div>
+              <div class="book-card__rating">${starsHTML(avg)} <span style="color:var(--text-muted);font-size:0.75rem;">(${book.reviews.length})</span></div>
+              <span class="book-card__category">${book.category}</span>
+            </div>
+          </div>`;
+      }).join('');
+
+      grid.querySelectorAll('.book-card').forEach(card => {
+        card.addEventListener('click', () => openDetail(card.dataset.id));
+      });
+    }
+
+    // Open detail
+    function openDetail(id) {
+      const book = books.find(b => b.id === id);
+      if (!book) return;
+
+      const avg = avgRating(book.reviews);
+      const detail = document.getElementById('detail');
+
+      detail.innerHTML = `
+        <div class="detail__top">
+          <img class="detail__cover" src="${book.cover}" alt="${book.title}">
+          <div class="detail__meta">
+            <span class="detail__category">${book.category}</span>
+            <div class="detail__title">${book.title}</div>
+            <div class="detail__author">by ${book.author}</div>
+            <div class="detail__avg-rating">${starsHTML(avg)} ${avg.toFixed(1)} from ${book.reviews.length} review${book.reviews.length === 1 ? '' : 's'}</div>
+            <p class="detail__summary">${book.summary}</p>
+            <a class="detail__cta" href="${book.amazonUrl}" target="_blank" rel="noopener noreferrer">
+              Buy on Amazon &rarr;
+            </a>
+          </div>
+        </div>
+        <div class="reviews">
+          <h3 class="reviews__heading">Community Reviews</h3>
+          ${book.reviews.map(r => `
+            <div class="review">
+              <div class="review__header">
+                <span class="review__reviewer">${r.reviewer}</span>
+                <span class="review__date">${formatDate(r.date)}</span>
+              </div>
+              <div class="review__stars">${starsHTML(r.rating)}</div>
+              <p class="review__text">${r.text}</p>
+            </div>
+          `).join('')}
+        </div>`;
+
+      document.getElementById('overlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close detail
+    function closeDetail() {
+      document.getElementById('overlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('closeBtn').addEventListener('click', closeDetail);
+    document.getElementById('overlay').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('overlay')) closeDetail();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDetail(); });
+
+    // Load books
+    fetch('books.json')
+      .then(r => r.json())
+      .then(data => {
+        books = data;
+        renderFilters();
+        renderGrid();
+      })
+      .catch(() => {
+        // Fallback: try inline data
+        document.getElementById('bookGrid').innerHTML =
+          '<p style="color:var(--text-muted);text-align:center;grid-column:1/-1;">Could not load books. Make sure books.json is served from the same origin.</p>';
+      });
+  </script>
+
+</body>
+</html>

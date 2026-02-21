@@ -1,0 +1,59 @@
+[
+  {
+    "id": "the-pmbok-guide-7th",
+    "title": "A Guide to the Project Management Body of Knowledge (PMBOK Guide) \u2013 7th Edition",
+    "author": "Project Management Institute",
+    "cover": "https://m.media-amazon.com/images/I/71wAI0rxLzL._SY466_.jpg",
+    "amazonUrl": "https://www.amazon.co.uk/dp/1628256648?tag=YOUR-AFFILIATE-TAG",
+    "category": "Project Delivery",
+    "summary": "The definitive guide to project management, now updated with a principles-based approach that reflects modern delivery methods.",
+    "reviews": [
+      {
+        "reviewer": "James Garner",
+        "rating": 4,
+        "date": "2026-02-10",
+        "text": "The 7th edition is a huge shift from prescriptive processes to principles. It finally acknowledges that not every project fits a waterfall mould. Essential reading if you're in project delivery, though it can feel abstract without real-world examples to anchor it."
+      }
+    ]
+  },
+  {
+    "id": "co-intelligence",
+    "title": "Co-Intelligence: Living and Working with AI",
+    "author": "Ethan Mollick",
+    "cover": "https://m.media-amazon.com/images/I/714BVFMMI4L._SY466_.jpg",
+    "amazonUrl": "https://www.amazon.co.uk/dp/059371671X?tag=YOUR-AFFILIATE-TAG",
+    "category": "AI",
+    "summary": "Ethan Mollick explores how AI is reshaping work, creativity, and education \u2014 with practical frameworks for using it effectively.",
+    "reviews": [
+      {
+        "reviewer": "James Garner",
+        "rating": 5,
+        "date": "2026-01-20",
+        "text": "One of the best books on practical AI adoption I've read. Mollick doesn't hype or fear-monger \u2014 he gives you real frameworks for integrating AI into your work. If you're in project delivery and wondering how AI fits in, start here."
+      },
+      {
+        "reviewer": "Sarah Mitchell",
+        "rating": 4,
+        "date": "2026-02-05",
+        "text": "Really accessible and well-written. I appreciated the focus on practical application rather than just theory. Lost a star because some sections felt a bit repetitive, but overall a must-read."
+      }
+    ]
+  },
+  {
+    "id": "thinking-fast-and-slow",
+    "title": "Thinking, Fast and Slow",
+    "author": "Daniel Kahneman",
+    "cover": "https://m.media-amazon.com/images/I/71wvKXWfcML._SY466_.jpg",
+    "amazonUrl": "https://www.amazon.co.uk/dp/0141033576?tag=YOUR-AFFILIATE-TAG",
+    "category": "Leadership",
+    "summary": "Nobel laureate Daniel Kahneman reveals the two systems that drive how we think and make decisions \u2014 essential for anyone managing projects or teams.",
+    "reviews": [
+      {
+        "reviewer": "James Garner",
+        "rating": 5,
+        "date": "2025-12-15",
+        "text": "A foundational book for understanding decision-making. As a project manager, understanding cognitive biases has been one of the most valuable skills I've developed. This book is the starting point for that journey."
+      }
+    ]
+  }
+]
